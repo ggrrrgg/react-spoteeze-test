@@ -11,7 +11,7 @@ const CLIENT_SECRET = "e1531ab8db3f482ab4926524ab8e4b55";
 function App() {
   const [searchInput, setSearchInput] = useState('');
   const [accessToken, setAccessToken] = useState('');
-
+  const [albums, setAlbums] = useState([]);
 
 
   useEffect(() => {
@@ -47,13 +47,15 @@ function App() {
 
     console.log(`Artist ID is ${artistID}`);
     // Get request with Artist ID to get all the albums or that artist
-    let albums = await fetch('https://api.spotify.com/v1/artists/' + artistID + '/albums' + '?include_groups=album&limit=50', artistParameters)
+    let returnedAlbums = await fetch('https://api.spotify.com/v1/artists/' + artistID + '/albums' + '?include_groups=album&ep&limit=50', artistParameters)
     .then(response => response.json())
     .then(data => {
       console.log(data);
+      setAlbums(data.items);
     })
     // Display those albums to the user
   }
+  console.log(albums);
 
   return (
     <div className="App">
@@ -76,12 +78,18 @@ function App() {
       </Container>
       <Container>
         <Row className='mx-2 row row-cols-4'>
-          <Card>
-            <Card.Img src=''/>
+          {albums.map( (album, i) => {
+              console.log(album);
+            return (
+              <Card>
+            <Card.Img src={album.images[0].url}/>
             <Card.Body>
-              <Card.Title>Album Name</Card.Title>
+              <Card.Title>{album.name}</Card.Title>
             </Card.Body>
           </Card>
+            )
+          })}
+          
         </ Row>
         
       </Container>
